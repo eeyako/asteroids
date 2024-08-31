@@ -5,6 +5,7 @@ from constants import *
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from circleshape import CircleShape
 from shot import Shot
 
 
@@ -16,14 +17,16 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Create groups
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    AsteroidField.containers = (updatable,)
-    Asteroid.containers = (asteroids, updatable, drawable)
-    Shot.containers = (shots, updatable, drawable)
-    Player.containers = (updatable, drawable)
+    updatables = pygame.sprite.Group()  # type: list[CircleShape]
+    drawables = pygame.sprite.Group()  # type: list[CircleShape]
+    asteroids = pygame.sprite.Group()  # type: list[CircleShape]
+    shots = pygame.sprite.Group()  # type: list[CircleShape]
+
+    # Assign containers
+    AsteroidField.containers = (updatables,)
+    Asteroid.containers = (asteroids, updatables, drawables)
+    Shot.containers = (shots, updatables, drawables)
+    Player.containers = (updatables, drawables)
 
     # Initialize objects
     AsteroidField()
@@ -40,16 +43,21 @@ def main():
 
         screen.fill(color='black')
 
-        for each in updatable:
-            each.update(dt=dt)
+        for updatable in updatables:
+            updatable.update(dt=dt)
 
-        for each in asteroids:
-            if each.is_colliding(player):
+        for asteroid in asteroids:
+            if asteroid.is_colliding(player):
                 print('Game over!')
                 sys.exit()
 
-        for each in drawable:
-            each.draw(screen=screen)
+            for shot in shots:
+                if asteroid.is_colliding(shot):
+                    asteroid.kill()
+                    shot.kill()
+
+        for drawable in drawables:
+            drawable.draw(screen=screen)
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
