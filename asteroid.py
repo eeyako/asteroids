@@ -1,11 +1,10 @@
 import pygame
 import random
 from circleshape import CircleShape
-from constants import *
+from constants import ASTEROID_MIN_RADIUS
 
 
 class Asteroid(CircleShape):
-
     def __init__(self, x, y, radius):
         # type: (float, float, float) -> None
         super().__init__(x, y, radius)
@@ -14,10 +13,10 @@ class Asteroid(CircleShape):
         # type: (pygame.Surface) -> None
         pygame.draw.circle(
             surface=screen,
-            color='white',
+            color="white",
             center=self.position,
             radius=self.radius,
-            width=2
+            width=2,
         )
 
     def split(self):
@@ -33,7 +32,7 @@ class Asteroid(CircleShape):
             Asteroid(
                 x=self.position.x,
                 y=self.position.y,
-                radius=old_radius - ASTEROID_MIN_RADIUS
+                radius=old_radius - ASTEROID_MIN_RADIUS,
             ).velocity = vel * 1.2
 
     def update(self, dt):

@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from abc import abstractmethod
+
 import pygame
 
 # Base class for game objects
